@@ -4,8 +4,10 @@ let chartInstances = {};
 const STORAGE_KEY = 'hyundaiCardTracker';
 
 // API
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwjpCYqCQ4O_LvMfb5OnqGlpm76OCh3lvcnIChr46_MnqxYdPMWmALqAZAImcoblwCd6A/exec';
+
 function getScriptUrl() {
-  return localStorage.getItem(`${STORAGE_KEY}_url`) || '';
+  return localStorage.getItem(`${STORAGE_KEY}_url`) || DEFAULT_SCRIPT_URL;
 }
 
 function setScriptUrl(url) {
