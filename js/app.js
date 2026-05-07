@@ -36,7 +36,6 @@ async function apiPost(data) {
 // Data
 async function loadTransactions() {
   if (!getScriptUrl()) {
-    document.getElementById('setupBanner').classList.add('visible');
     return;
   }
 
@@ -124,6 +123,7 @@ function renderDashboard() {
 }
 
 function filterByPeriod(tx, period) {
+  tx = tx.filter(t => t.amount > 0);
   const now = new Date();
   const today = now.toISOString().split('T')[0];
 
@@ -299,7 +299,7 @@ function renderMonthlyComparison() {
   const monthlyMap = {};
   const monthlyCatMap = {};
 
-  for (const t of transactions) {
+  for (const t of transactions.filter(t => t.amount > 0)) {
     const m = t.date.substring(0, 7);
     monthlyMap[m] = (monthlyMap[m] || 0) + t.amount;
     if (!monthlyCatMap[m]) monthlyCatMap[m] = {};
@@ -356,7 +356,7 @@ function renderWeekdayPattern() {
 
   const daysSet = Array.from({ length: 7 }, () => new Set());
 
-  for (const t of transactions) {
+  for (const t of transactions.filter(t => t.amount > 0)) {
     const d = new Date(t.date);
     const day = d.getDay();
     dayTotals[day] += t.amount;
@@ -408,7 +408,7 @@ function renderHourlyPattern() {
   const hourTotals = Array(24).fill(0);
   const hourCounts = Array(24).fill(0);
 
-  for (const t of transactions) {
+  for (const t of transactions.filter(t => t.amount > 0)) {
     if (!t.time) continue;
     const hour = parseInt(t.time.split(':')[0], 10);
     if (isNaN(hour)) continue;
@@ -456,7 +456,7 @@ function renderTopStores() {
   const storeAmount = {};
   const storeCount = {};
 
-  for (const t of transactions) {
+  for (const t of transactions.filter(t => t.amount > 0)) {
     storeAmount[t.store] = (storeAmount[t.store] || 0) + t.amount;
     storeCount[t.store] = (storeCount[t.store] || 0) + 1;
   }
@@ -802,55 +802,6 @@ document.addEventListener('DOMContentLoaded', () => {
     catSelect.appendChild(opt);
   });
 
-  // Setup
-  document.getElementById('btnSetup').addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-    document.querySelector('[data-tab="setup"]').classList.add('active');
-    document.getElementById('tab-setup').style.display = 'block';
-    document.getElementById('setupScriptUrl').value = getScriptUrl();
-  });
-
-  document.getElementById('btnGuide').addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-    document.querySelector('[data-tab="setup"]').classList.add('active');
-    document.getElementById('tab-setup').style.display = 'block';
-  });
-
-  // URL Save
-  document.getElementById('btnSaveUrl').addEventListener('click', () => {
-    const url = document.getElementById('scriptUrl').value.trim();
-    if (!url) return toast('URL을 입력하세요', 'error');
-    setScriptUrl(url);
-    document.getElementById('setupBanner').classList.remove('visible');
-    toast('URL 저장 완료', 'success');
-    loadTransactions();
-  });
-
-  document.getElementById('btnSetupSave').addEventListener('click', () => {
-    const url = document.getElementById('setupScriptUrl').value.trim();
-    if (!url) return toast('URL을 입력하세요', 'error');
-    setScriptUrl(url);
-    document.getElementById('setupBanner').classList.remove('visible');
-    toast('URL 저장 완료', 'success');
-    loadTransactions();
-  });
-
-  document.getElementById('btnTestConnection').addEventListener('click', async () => {
-    const resultEl = document.getElementById('testResult');
-    resultEl.textContent = '연결 테스트 중...';
-    resultEl.style.color = 'var(--text-dim)';
-    try {
-      const data = await apiGet('getData');
-      resultEl.textContent = `연결 성공! ${(data.transactions || []).length}건의 데이터가 있습니다.`;
-      resultEl.style.color = 'var(--green)';
-    } catch (e) {
-      resultEl.textContent = '연결 실패: ' + e.message;
-      resultEl.style.color = 'var(--red)';
-    }
-  });
-
   // Add modal
   document.getElementById('btnAdd').addEventListener('click', openAddModal);
   document.getElementById('btnCancelAdd').addEventListener('click', () => {
@@ -872,9 +823,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Load
-  if (getScriptUrl()) {
-    loadTransactions();
-  } else {
-    document.getElementById('setupBanner').classList.add('visible');
-  }
+  loadTransactions();
 });
