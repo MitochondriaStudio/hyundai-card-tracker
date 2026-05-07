@@ -24,21 +24,9 @@
     <header>
       <h1>현대카드 지출 트래커</h1>
       <div class="header-actions">
-        <button class="btn btn-secondary btn-sm" id="btnSetup">설정</button>
         <button class="btn btn-primary" id="btnAdd">+ 수동 입력</button>
       </div>
     </header>
-
-    <!-- Setup Banner -->
-    <div class="setup-banner" id="setupBanner">
-      <h2>Google Apps Script URL을 입력하세요</h2>
-      <p>설정 가이드에 따라 Google Apps Script를 배포한 후, 웹 앱 URL을 여기에 입력하세요.</p>
-      <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/xxx/exec">
-      <div style="display:flex;gap:12px">
-        <button class="btn btn-primary" id="btnSaveUrl">저장</button>
-        <button class="btn btn-secondary" id="btnGuide">설정 가이드 보기</button>
-      </div>
-    </div>
 
     <!-- Summary -->
     <div class="summary-grid" id="summaryGrid">
@@ -69,7 +57,6 @@
       <button class="tab active" data-tab="dashboard">대시보드</button>
       <button class="tab" data-tab="transactions">거래 내역</button>
       <button class="tab" data-tab="analysis">분석</button>
-      <button class="tab" data-tab="setup">설정 가이드</button>
     </div>
 
     <!-- Dashboard Tab -->
@@ -141,86 +128,6 @@
       </div>
     </div>
 
-    <!-- Setup Guide Tab -->
-    <div id="tab-setup" class="tab-content" style="display:none">
-      <div class="setup-page">
-        <h1>설정 가이드</h1>
-        <p class="subtitle">3단계로 현대카드 지출을 자동 추적하세요.</p>
-
-        <div class="step">
-          <span class="step-number">1</span>
-          <h3>Google Sheets + Apps Script 설정</h3>
-          <p>
-            1. <a href="https://sheets.new" target="_blank" style="color:var(--accent-light)">Google Sheets</a>에서 새 스프레드시트를 만듭니다.<br>
-            2. 시트 이름을 <code>지출내역</code>으로 변경합니다.<br>
-            3. 메뉴에서 <strong>확장 프로그램 > Apps Script</strong>를 클릭합니다.<br>
-            4. 기본 코드를 모두 지우고, 아래 파일의 내용을 붙여넣습니다.
-          </p>
-          <pre>📁 apps-script/Code.gs 파일의 전체 내용을 복사하세요</pre>
-          <p>
-            5. <strong>배포 > 새 배포</strong>를 클릭합니다.<br>
-            6. 유형: <code>웹 앱</code> 선택<br>
-            7. 실행 사용자: <code>나</code><br>
-            8. 액세스 권한: <code>모든 사용자</code><br>
-            9. <strong>배포</strong> 클릭 후 URL을 복사합니다.
-          </p>
-        </div>
-
-        <div class="step">
-          <span class="step-number">2</span>
-          <h3>웹 앱 URL 연결</h3>
-          <p>
-            위에서 복사한 Apps Script 웹 앱 URL을 입력하세요.
-          </p>
-          <input type="text" id="setupScriptUrl" placeholder="https://script.google.com/macros/s/xxx/exec" style="margin-top:12px">
-          <button class="btn btn-primary" id="btnSetupSave" style="margin-top:12px">URL 저장</button>
-          <button class="btn btn-secondary" id="btnTestConnection" style="margin-top:12px">연결 테스트</button>
-          <p id="testResult" style="margin-top:8px;"></p>
-        </div>
-
-        <div class="step">
-          <span class="step-number">3</span>
-          <h3>iPhone 단축어 자동화 설정</h3>
-          <p>
-            iPhone의 <strong>단축어</strong> 앱에서 자동화를 만들어, 현대카드 알림이 올 때마다 자동으로 데이터를 저장합니다.
-          </p>
-          <p>
-            1. <strong>단축어</strong> 앱 열기<br>
-            2. 하단 <strong>자동화</strong> 탭 선택<br>
-            3. <strong>+</strong> 버튼 > <strong>개인용 자동화 생성</strong><br>
-            4. <strong>알림</strong> 선택<br>
-            5. 앱: <strong>지갑</strong> (또는 현대카드 앱) 선택, <strong>포함 내용: 현대카드</strong> 입력<br>
-            6. <strong>즉시 실행</strong> 활성화 (확인 없이 자동 실행)<br>
-            7. <strong>동작 추가</strong>에서 아래 단축어를 구성합니다:
-          </p>
-          <pre>
-동작 1: URL
-  → 여기에 Apps Script URL 입력
-
-동작 2: URL의 콘텐츠 가져오기
-  → 방법: POST
-  → 본문: JSON
-  → 키-값 추가:
-    action: addFromNotification
-    text: [단축어 입력]
-
-(단축어 입력 = 알림 내용 변수)</pre>
-          <p style="margin-top:12px">
-            <strong>참고:</strong> iOS 버전에 따라 알림 자동화의 동작이 다를 수 있습니다.
-            알림 자동화가 제한되는 경우, <strong>수동 입력</strong> 버튼을 활용하세요.
-          </p>
-        </div>
-
-        <div class="step">
-          <span class="step-number">*</span>
-          <h3>수동 입력도 가능합니다</h3>
-          <p>
-            자동화가 어려운 경우, 상단의 <strong>"+ 수동 입력"</strong> 버튼으로 직접 지출을 기록할 수 있습니다.
-            가맹점 이름을 입력하면 카테고리가 자동 추천됩니다.
-          </p>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Add Transaction Modal -->
