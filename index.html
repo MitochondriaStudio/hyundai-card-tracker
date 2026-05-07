@@ -9,7 +9,18 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 </head>
 <body>
-  <div class="container">
+  <!-- Lock Screen -->
+  <div id="lockScreen" class="lock-screen">
+    <div class="lock-box">
+      <h2>현대카드 지출 트래커</h2>
+      <p>비밀번호를 입력하세요</p>
+      <input type="password" id="lockPassword" placeholder="비밀번호" autocomplete="off">
+      <button class="btn btn-primary" id="btnUnlock" style="width:100%;margin-top:12px;">확인</button>
+      <p id="lockError" style="color:var(--red);font-size:13px;margin-top:8px;"></p>
+    </div>
+  </div>
+
+  <div class="container" id="appContainer" style="display:none;">
     <header>
       <h1>현대카드 지출 트래커</h1>
       <div class="header-actions">
@@ -294,6 +305,38 @@
 
   <div class="toast-container" id="toasts"></div>
 
+  <script>
+    const PASS_HASH = '310288168ef50596bf48fc950ce60688b924012cdc888e777ba08806b9a8df98';
+
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function unlockApp() {
+      document.getElementById('lockScreen').style.display = 'none';
+      document.getElementById('appContainer').style.display = 'block';
+    }
+
+    if (sessionStorage.getItem('unlocked') === 'true') {
+      unlockApp();
+    }
+
+    document.getElementById('btnUnlock').addEventListener('click', async () => {
+      const pw = document.getElementById('lockPassword').value;
+      const hash = await sha256(pw);
+      if (hash === PASS_HASH) {
+        sessionStorage.setItem('unlocked', 'true');
+        unlockApp();
+      } else {
+        document.getElementById('lockError').textContent = '비밀번호가 틀렸습니다.';
+      }
+    });
+
+    document.getElementById('lockPassword').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('btnUnlock').click();
+    });
+  </script>
   <script src="js/app.js"></script>
 </body>
 </html>
