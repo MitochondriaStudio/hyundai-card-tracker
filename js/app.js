@@ -537,7 +537,7 @@ function renderTransactions() {
       <div class="transaction-date">${formatDateShort(t.date)}<br><small>${t.time}</small></div>
       <div class="transaction-store">${escapeHtml(t.store)}<br><span class="location">${escapeHtml(t.location)}</span></div>
       <div class="transaction-category" onclick="openCategoryEdit(${t.row}, '${escapeAttr(t.category)}')">${escapeHtml(t.category)}</div>
-      <div class="transaction-amount">-${formatMoney(t.amount)}</div>
+      <div class="transaction-amount">${formatMoney(t.amount)}</div>
       <div class="transaction-actions">
         <button onclick="deleteTransaction(${t.row})" title="삭제">×</button>
       </div>
